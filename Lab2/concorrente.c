@@ -13,91 +13,91 @@ typedef struct {
 } t_Args;
 
 // Função executada pelas threads para calcular uma parte do produto interno
-void *prodConc(void *arg) {
+void *prodConcorrente(void *arg) {
     t_Args *args = (t_Args *) arg;
-    double soma = 0.0;
+    double soma_local = 0.0;
 
     for (long int i = args->id; i < args->n; i += args->nthreads) {
-        soma += args->a[i] * args->b[i];
+        soma_local += args->a[i] * args->b[i];
     }
 
-    double *ret = malloc(sizeof(double));
-    if (ret == NULL) {
-        perror("Erro ao alocar memória");
+    double *resultado = malloc(sizeof(double));
+    if (resultado == NULL) {
+        perror("Erro de alocação para resultado parcial");
         pthread_exit(NULL);
     }
-
-    *ret = soma;
-    pthread_exit((void *) ret);
+    *resultado = soma_local;
+    pthread_exit((void *) resultado);
 }
 
 // Função principal
 int main(int argc, char *argv[]) {
     if (argc < 3) {
-        printf("Uso: %s <nº threads> <arquivo>\n", argv[0]);
+        printf("Digite: %s <número de threads> <nome do arquivo>\n", argv[0]);
         return 1;
     }
 
     int nthreads = atoi(argv[1]);
-    char *arq = argv[2];
+    char *arquivo_vetores = argv[2];
     long int n;
     float *a, *b;
     double prod_esperado, prod_calculado = 0.0;
 
-    FILE *f = fopen(arq, "rb");
-    if (f == NULL) {
+    FILE *arquivo = fopen(arquivo_vetores, "rb");
+    if (arquivo == NULL) {
         printf("Erro ao abrir o arquivo\n");
         return 2;
     }
 
-    fread(&n, sizeof(long int), 1, f);
-    a = malloc(n * sizeof(float));
-    b = malloc(n * sizeof(float));
+    fread(&n, sizeof(long int), 1, arquivo);
+    a = (float *)malloc(n * sizeof(float));
+    b = (float *)malloc(n * sizeof(float));
     if (a == NULL || b == NULL) {
-        printf("Erro de alocação\n");
+        printf("Erro de alocação de memória\n");
         return 3;
     }
-    fread(a, sizeof(float), n, f);
-    fread(b, sizeof(float), n, f);
-    fread(&prod_esperado, sizeof(double), 1, f);
-    fclose(f);
+    fread(a, sizeof(float), n, arquivo);
+    fread(b, sizeof(float), n, arquivo);
+    fread(&prod_esperado, sizeof(double), 1, arquivo);
+    fclose(arquivo);
 
     pthread_t tid[nthreads];
     t_Args args[nthreads];
 
-  // Criação das threads  
-  for (long int i = 0; i < nthreads; i++) {
+    // Criação das threads
+    for (long int i = 0; i < nthreads; i++) {
         args[i].id = i;
         args[i].n = n;
         args[i].nthreads = nthreads;
         args[i].a = a;
         args[i].b = b;
-        if (pthread_create(&tid[i], NULL, prodConc, (void *)&args[i])) {
+
+        if (pthread_create(&tid[i], NULL, prodConcorrente, (void *)&args[i])) {
             printf("ERRO: pthread_create()\n");
             return 4;
         }
     }
 
-  // Aguarda o término das threads e soma os resultados parciais  
-  for (int i = 0; i < nthreads; i++) {
-        void *ret;
-        if (pthread_join(tid[i], &ret)) {
+    // Aguarda o término das threads e soma os resultados parciais
+    for (int i = 0; i < nthreads; i++) {
+        void *retorno;
+        if (pthread_join(tid[i], &retorno)) {
             printf("ERRO: pthread_join()\n");
             return 5;
         }
-        if (ret != NULL) {
-            double *val = (double *) ret;
-            prod_calculado += *val;
-            free(val);
+        if (retorno != NULL) {
+            double *resultado_parcial = (double *)retorno;
+            prod_calculado += *resultado_parcial;
+            free(resultado_parcial);
         }
     }
 
-  // Cálculo do erro relativo
-    double erro = fabs((prod_esperado - prod_calculado) / prod_esperado);
+    // Cálculo da variação relativa
+    double var_relativa = fabs((prod_esperado - prod_calculado) / prod_esperado);
 
     printf("Produto Interno Esperado = %.15lf\n", prod_esperado);
     printf("Produto Interno Calculado = %.15lf\n", prod_calculado);
-    printf("Erro Relativo = %.15lf\n", erro);
+    printf("Variação Relativa = %.15lf\n", var_relativa);
 
     free(a);
     free(b);
