@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
     char *arquivo_vetores = argv[2];
     long int n;
     float *a, *b;
-    double prod_esperado, prod_calculado = 0.0;
+    double prod_sequencial, prod_concorrente = 0.0;
 
     FILE *arquivo = fopen(arquivo_vetores, "rb");
     if (arquivo == NULL) {
@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
     }
     fread(a, sizeof(float), n, arquivo);
     fread(b, sizeof(float), n, arquivo);
-    fread(&prod_esperado, sizeof(double), 1, arquivo);
+    fread(&prod_sequencial, sizeof(double), 1, arquivo);
     fclose(arquivo);
 
     pthread_t tid[nthreads];
@@ -87,17 +87,18 @@ int main(int argc, char *argv[]) {
         }
         if (retorno != NULL) {
             double *resultado_parcial = (double *)retorno;
-            prod_calculado += *resultado_parcial;
+            prod_concorrente += *resultado_parcial;
             free(resultado_parcial);
         }
     }
 
     // Cálculo da variação relativa
-    double var_relativa = fabs((prod_esperado - prod_calculado) / prod_esperado);
+    double var_relativa = fabs((prod_sequencial - prod_concorrente) / prod_sequencial);
 
-    printf("Produto Interno Esperado = %.15lf\n", prod_esperado);
-    printf("Produto Interno Calculado = %.15lf\n", prod_calculado);
-    printf("Variação Relativa = %.15lf\n", var_relativa);
+    printf("Produto Interno Sequencial = %.20lf\n", prod_sequencial);
+    printf("Produto Interno Concorrente = %.20lf\n", prod_concorrente);
+    //printf("Diferença absoluta = %.15lf\n", fabs(prod_sequencial - prod_concorrente));
+    printf("Variação Relativa = %.20lf\n", var_relativa);
 
     free(a);
     free(b);
