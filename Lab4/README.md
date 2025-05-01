@@ -10,6 +10,9 @@ A máquina utilizada na realização dos testes possui as seguintes configuraç�
 ## 🔍 Análise dos Resultados
 Após executar 5 vezes cada configuração, foram obtidos os seguintes tempos médios de execução para os diferentes números de threads e tamanhos de entrada:
 
+![oi](Lab4/Tempo Concorrente.png)
+
+<img src: Lab4/Tempo Concorrente.png> 
 
 <br>
 
