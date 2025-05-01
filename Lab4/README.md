@@ -10,11 +10,27 @@ A máquina utilizada na realização dos testes possui as seguintes configuraç�
 ## 🔍 Análise dos Resultados
 Após executar 5 vezes cada configuração, foram obtidos os seguintes tempos médios de execução para os diferentes números de threads e tamanhos de entrada:
 
-![oi](Lab4/Tempo Concorrente.png)
+![](TempoConcorrente.png)
 
-<img src: Lab4/Tempo Concorrente.png> 
+Com base nos tempos médios obtidos, foram calculadas a aceleração e a eficiência, utilizando as seguintes métricas:
 
+$$Aceleração (n, t) = \frac{T_p(n, 1)}{T_p(n, t)}$$
+
+$$Eficiência (n, t) = \frac{Aceleração (n, t)}{t}$$
+
+**Onde:**
+* $$T_p(n, 1)$$ : Tempo concorrente de $$n$$ com 1 thread;
+* $$n$$ : Dimensão das matrizes;
+* $$t$$ : Quantidade de threads usadas na execução.
+
+Assim, foram obtidos os seguintes resultados: 
 <br>
+
+![](GráficoAceleração.png)
+
+
+![](GráficoEficiência.png)
+
 
 ## 💡 Conclusão
 A partir dos testes realizados, observei que o uso de threads é mais vantajoso para valores de *N* suficientemente grandes. Para *N* = 1.000, a versão sequencial apresentou desempenho superior, já que o tempo de criação e sincronização das threads acabou sendo maior do que o tempo necessário para executar a tarefa de forma direta. Ou seja, nesse caso, a concorrência prejudicou o desempenho.
