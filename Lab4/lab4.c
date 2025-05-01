@@ -2,12 +2,12 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <math.h>
-#include <time.h>
+#include "timer.h"
 
 // Variáveis globais
 long long atual; //variável que estará sendo lida pelas threads
 pthread_mutex_t mutex;
-long long N; // valor limite
+long long N;
 int totalPrimos; 
 
 // Função de cálculo de primalidade
@@ -30,7 +30,7 @@ void* ExecutaTarefa(void* arg) {
         long long num;
 
         pthread_mutex_lock(&mutex);
-        // checando se o programa deve encerrar
+        // Checando se o programa deve encerrar
         if (atual > N) {
             pthread_mutex_unlock(&mutex);
             break;
@@ -65,23 +65,17 @@ int main(int argc, char* argv[]) {
     N = atoll(argv[1]);
     nthreads = atoi(argv[2]);
 
-    // Calculando o tempo sequencial
-    struct timespec ini_seq, fim_seq;
-    clock_gettime(CLOCK_MONOTONIC, &ini_seq);
+    // Fiz a parte sequencial para testar a corretude da versão concorrente
 
+    // Quantidade de primos obtidos na versão sequencial
     int totalSeq = 0;
-    // Cálculo sequencial
+    // Cálculo Sequencial
     for (long long i = 1; i <= N; i++) {
         if (ehPrimo(i)) totalSeq++;
     }
 
-    // Obtendo o tempo gasto sequencial
-    clock_gettime(CLOCK_MONOTONIC, &fim_seq);
-    double tempoSeq = (fim_seq.tv_sec - ini_seq.tv_sec) + (fim_seq.tv_nsec - ini_seq.tv_nsec) / 1e9;
-
-    printf("Versao sequencial:\n");
-    printf("Total de primos entre 1 e %lld: %d\n", N, totalSeq);
-    printf("Tempo de execucao sequencial: %.9f segundos\n\n", tempoSeq);
+    printf("Versao Sequencial:\n");
+    printf("Total de primos entre 1 e %lld: %d\n\n", N, totalSeq);
 
     // Iniciando a parte concorrente
     tid = (pthread_t*) malloc(sizeof(pthread_t) * nthreads);
@@ -93,9 +87,9 @@ int main(int argc, char* argv[]) {
     atual = 1;
     totalPrimos = 0;
 
-    // Inicializando o cálculo do tempo concorrente
-    struct timespec inicio, fim;
-    clock_gettime(CLOCK_MONOTONIC, &inicio);
+    // Cálculo do tempo concorrente
+    double start, finished, elapsed;
+    GET_TIME(start);
 
     for (long int t = 0; t < nthreads; t++) {
         if (pthread_create(&tid[t], NULL, ExecutaTarefa, (void*)t)) {
@@ -109,19 +103,18 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    // Obtendo o tempo gasto concorrente
-    clock_gettime(CLOCK_MONOTONIC, &fim);
-    double tempoConc = (fim.tv_sec - inicio.tv_sec) + (fim.tv_nsec - inicio.tv_nsec) / 1e9;
+    GET_TIME(finished)
+    elapsed = finished - start;
 
     pthread_mutex_destroy(&mutex);
     free(tid);
 
-    printf("Versão Concorrente:\n");
+    printf("\nVersao concorrente:\n");
     printf("Total de primos entre 1 e %lld: %d\n", N, totalPrimos);
-    printf("Tempo de execucao concorrente: %.9f segundos\n", tempoConc);
+    printf("Tempo de execucao concorrente: %.9f segs\n", elapsed);;
 
     // Testando a corretude comparando o resultado sequencial e concorrente
     if (totalPrimos==totalSeq) puts("Corretude Confirmada!");
-    else puts("Código Incorreto!");
+    else puts("Código incorreto!");
     return 0;
 }
