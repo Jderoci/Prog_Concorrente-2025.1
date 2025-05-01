@@ -1,9 +1,15 @@
 ## ⚙️ Configurações da Máquina
 A máquina utilizada na realização dos testes possui as seguintes configurações:
-- **Sistema Operacional**: Linux Mint 21 Cinnamon
-- **Versão do Cinnamon**: 5.4.12
-- **Kernel do Linux**: 5.15.0-101-generic
-- **Processador**: 13ª geração Intel® Core™ i5-13500, com 14 núcleos
+- **Sistema Operacional**: Windows 11 Pro – Versão 24H2;
+- **Compilação do Sistema**: 26100.3775;
+- **Processador**: AMD Ryzen 5 2600, com 6 núcleos e 12 threads, frequência base de 3.40 GHz;
+- **Memória RAM**: 16,0 GB;
+- **Arquitetura**: Sistema operacional de 64 bits, processador baseado em x64.
+
+<br>
+
+## 💻 Código
+
 
 <br>
 
