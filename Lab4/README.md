@@ -15,7 +15,7 @@ $$Aceleração (n, t) = \frac{T_p(n, 1)}{T_p(n, t)}$$
 
 $$Eficiência (n, t) = \frac{Aceleração (n, t)}{t}$$
 
-**Onde:**
+*Onde:*
 * $$T_p(n, 1)$$ : Tempo concorrente de $$n$$ com **1 thread**;
 * $$n$$ : Dimensão das matrizes;
 * $$t$$ : Quantidade de threads usadas na execução.
@@ -32,7 +32,7 @@ Assim, foram obtidos os seguintes resultados:
 ## 💡 Conclusão
 A partir dos testes realizados, observei que o uso de múltiplas threads só apresenta vantagem quando $$N$$ é suficientemente grande. Para $$N = 1.000$$, a execução com **1 thread** foi mais eficiente. Isso porque o custo de criação e sincronização das threads, junto com o uso de mutex, acaba superando os ganhos de paralelismo em tarefas pequenas. Isso é visível no gráfico de eficiência: com **2 e 4 threads**, a eficiência cai bastante nesse caso.
 
-Já para $$N = 1.000.000$$, a concorrência mostra vantagem: com **2 threads**, o tempo caiu quase pela metade, mas com **4 threads** o ganho não foi tão alto. sso pode ter ocorrido devido à limitação do número de núcleos da máquina utilizada ou pelo aumento da disputa entre as threads pelo acesso à variável compartilhada, o que pode gerar atrasos por conta do uso do mutex.
+Já para $$N = 1.000.000$$, a concorrência mostra vantagem: com **2 threads**, o tempo caiu quase pela metade, mas com **4 threads** o ganho não foi tão alto. Isso pode ter ocorrido devido à limitação do número de núcleos da máquina utilizada ou pelo aumento da disputa entre as threads pelo acesso à variável compartilhada, o que pode gerar atrasos por conta do uso do mutex.
 
 
 ## ⚙️ Configurações da Máquina
