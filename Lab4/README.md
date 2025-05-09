@@ -9,7 +9,11 @@ Após executar 5 vezes cada configuração, foram obtidos os seguintes tempos m�
 
 ![](TempoConcorrente.png)
 
-Com base nos tempos médios obtidos, foram calculadas a aceleração e a eficiência, utilizando as seguintes métricas:
+Resultando no seguinte gráfico de tempo médio de execução:
+
+![](TempoExecucao.png)
+
+A partir disso, foram calculadas a aceleração e a eficiência utilizando as seguintes métricas:
 
 $$Aceleração (n, t) = \frac{T_p(n, 1)}{T_p(n, t)}$$
 
