@@ -116,10 +116,10 @@ class Hello implements Runnable {
    }
 }
 
-class Primo implements Runnable {
-    private final long numero;
+class VerificaPrimo implements Runnable {
+    private final int numero;
 
-    public Primo(long numero) {
+    public VerificaPrimo(int numero) {
         this.numero = numero;
     }
 
@@ -132,7 +132,7 @@ class Primo implements Runnable {
     }
 
     // Função auxiliar para verificar se é primo
-    private boolean ehPrimo(long n) {
+    private boolean ehPrimo(int n) {
         if (n <= 1) return false;
         if (n == 2) return true;
         if (n % 2 == 0) return false;
@@ -156,7 +156,7 @@ class MyPool {
         final String m = "Hello da tarefa " + i;
         Runnable hello = new Hello(m);
         pool.execute(hello);
-        Runnable primo = new Primo(i);
+        Runnable primo = new VerificaPrimo(i);
         pool.execute(primo);
       }
 
